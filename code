@@ -1,0 +1,55 @@
+class Store:
+	def __init__(self, no, xcoordinate, ycoordinate, initial, rate, interval):
+		self.n = no
+		self.x = xcoordinate
+		self.y = ycoordinate
+		self.a = initial
+		self.b = rate
+		self.c = interval
+########################################################
+def actualpath(l,time,currentx,currenty):
+	################################
+	def storevisit(s,nl):
+		maxshoptime = max(0,m - time - (abs(currentx-s.x) + abs(currenty-s.y)) - 
+		(abs(initialx-s.x) + abs(initialy-s.y)))		
+		emptyingtime = int(max(0,s.a/s.b - (time+
+		(abs(currentx-s.x) + abs(currenty-s.y)))))
+		if maxshoptime > 0:
+			shoptime = min(emptyingtime,s.c,maxshoptime)
+		else:
+			return []
+		if (nl == None):
+			return [[s.n,shoptime]]
+		else:
+			return [[s.n,shoptime]] + actualpath(nl,time+(abs(currentx-s.x)+abs(currenty-s.y))+shoptime,s.x, s.y)
+	#################################
+	maximum = []
+	maxtime = 0
+	for i in l:
+		li = l[:]
+		li.remove(i)
+		current = storevisit(i,li)
+		ctime = 0
+		for j in current:
+			ctime = ctime + j[1]
+		if ctime > maxtime:
+			maxtime = ctime
+			maximum = current
+	return maximum
+########################funcs end#########################
+t = int(input())
+for i in range(t):
+	path = []
+	n, m = map(int,input().split())
+	for j in range(n):
+		x,y,a,b,c = map(int,input().split())
+		store = Store(j+1,x,y,a,b,c)
+		path.append(store)
+	initialx, initialy = map(int,input().split())
+#######################################
+	path = actualpath(path,0,initialx, initialy)
+########################################
+	print(i+1)
+	for j in path:
+		print(j[0],j[1])
+	print(0,0)
